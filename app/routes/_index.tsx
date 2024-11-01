@@ -20,7 +20,7 @@ export default function Index() {
       capacity: "2 Adults",
       title: "Standard Queen Room",
       description: "One queen bed",
-      price: "109",
+      price: "80",
     },
     {
       slug: "king-room",
@@ -28,7 +28,7 @@ export default function Index() {
       capacity: "2 Adults",
       title: "King Room",
       description: "One king bed",
-      price: "129",
+      price: "90",
     },
     {
       slug: "double-queen",
@@ -36,7 +36,7 @@ export default function Index() {
       capacity: "4 Adults",
       title: "Double Queen Room",
       description: "Two queen beds",
-      price: "149",
+      price: "99",
     },
     {
       slug: "family-room",
@@ -44,7 +44,7 @@ export default function Index() {
       capacity: "3-4 People",
       title: "Family Room",
       description: "Queen bed + futon",
-      price: "139",
+      price: "90",
     },
   ];
 
