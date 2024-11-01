@@ -1,4 +1,4 @@
-import { json } from "@remix-run/node";
+import { json } from "@remix-run/cloudflare";
 import { Resend } from "resend";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -21,13 +21,19 @@ export async function sendBookingEmail(bookingData: BookingData) {
     subject: `New Booking Request - ${bookingData.firstName} ${bookingData.lastName}`,
     html: `
         <h2>New Booking Request</h2>
-        <p><strong>Guest:</strong> ${bookingData.firstName} ${bookingData.lastName}</p>
+        <p><strong>Guest:</strong> ${bookingData.firstName} ${
+      bookingData.lastName
+    }</p>
         <p><strong>Email:</strong> ${bookingData.email}</p>
         <p><strong>Phone:</strong> ${bookingData.phone}</p>
         <p><strong>Room Type:</strong> ${bookingData.room}</p>
         <p><strong>Check-in:</strong> ${bookingData.checkIn}</p>
         <p><strong>Check-out:</strong> ${bookingData.checkOut}</p>
-        ${bookingData.specialRequests ? `<p><strong>Special Requests:</strong> ${bookingData.specialRequests}</p>` : ""}
+        ${
+          bookingData.specialRequests
+            ? `<p><strong>Special Requests:</strong> ${bookingData.specialRequests}</p>`
+            : ""
+        }
       `,
   });
 

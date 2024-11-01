@@ -7,7 +7,7 @@ import {
   useLocation,
   useRouteError,
 } from "@remix-run/react";
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/cloudflare";
 import { Footer } from "~/components/layout/Footer";
 import Navigation from "~/components/layout/Navigation";
 import ErrorBoundary from "~/components/ErrorBoundary";

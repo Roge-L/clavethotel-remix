@@ -1,8 +1,5 @@
 import React, { useState } from "react";
 import { Form } from "@remix-run/react";
-import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-
 export default function BookingForm() {
   const [selectedRoom, setSelectedRoom] = useState("standard-queen");
 
