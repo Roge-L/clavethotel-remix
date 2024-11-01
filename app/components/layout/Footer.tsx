@@ -27,7 +27,7 @@ export function Footer() {
                 <p className="font-sans font-medium text-white mb-2">
                   Liquor Store
                 </p>
-                <p className="font-sans">Monday - Saturday: 11AM-10PM</p>
+                <p className="font-sans">Monday - Saturday: 11AM-11PM</p>
                 <p className="font-sans text-gray-400">Sunday: Closed</p>
               </div>
             </div>
