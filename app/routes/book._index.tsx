@@ -14,7 +14,7 @@ export const meta: MetaFunction = () => {
   ];
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, context }: ActionFunctionArgs) => {
   const formData = await request.formData();
   const bookingData = {
     firstName: formData.get("firstName") as string,
@@ -27,7 +27,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     specialRequests: formData.get("specialRequests") as string,
   };
 
-  const response = await sendBookingEmail(bookingData);
+  const response = await sendBookingEmail(bookingData, context);
 
   if (response.status === 400) {
     // If there was an error sending the email

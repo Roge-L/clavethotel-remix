@@ -1,4 +1,5 @@
-import { supabase } from "~/supabase";
+import { getSupabaseClient } from "~/supabase";
+import type { AppLoadContext } from "@remix-run/cloudflare";
 
 type Post = {
   id: number;
@@ -13,40 +14,33 @@ type Post = {
   updated_date: string | null;
 };
 
-export async function getPosts(): Promise<Post[] | undefined> {
+export async function getPosts(context: AppLoadContext): Promise<Post[]> {
+  const supabase = getSupabaseClient(context);
   const { data, error } = await supabase.from("posts").select("*");
 
   if (error) {
     console.error("Error fetching posts:", error);
-  } else {
-    console.log(data);
+    return [];
   }
 
-  return data?.map((post: any) => ({
-    id: post.id,
-    title: post.title,
-    slug: post.slug,
-    content: post.content,
-    author_id: post.author_id,
-    category_id: post.category_id,
-    tags: post.tags,
-    featured_img: post.featured_img,
-    published_date: post.published_date,
-    updated_date: post.updated_date,
-  }));
+  return (data as Post[]) || [];
 }
 
-export async function getPost(slug: string): Promise<Post> {
+export async function getPost(
+  slug: string,
+  context: AppLoadContext
+): Promise<Post | null> {
+  const supabase = getSupabaseClient(context);
   const { data, error } = await supabase
     .from("posts")
     .select("*")
-    .eq("slug", slug);
+    .eq("slug", slug)
+    .single();
 
-  if (error || !data) {
+  if (error) {
     console.error("Error fetching post:", error);
-  } else {
-    console.log(data);
+    return null;
   }
 
-  return data?.[0];
+  return data as Post;
 }

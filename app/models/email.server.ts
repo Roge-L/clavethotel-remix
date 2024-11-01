@@ -1,7 +1,6 @@
 import { json } from "@remix-run/cloudflare";
 import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import type { AppLoadContext } from "@remix-run/cloudflare";
 
 type BookingData = {
   firstName: string;
@@ -14,7 +13,27 @@ type BookingData = {
   specialRequests?: string;
 };
 
-export async function sendBookingEmail(bookingData: BookingData) {
+let resendClient: Resend | null = null;
+
+function getResendClient(context: AppLoadContext) {
+  if (resendClient) return resendClient;
+
+  const resendApiKey = context.cloudflare.env.RESEND_API_KEY;
+
+  if (!resendApiKey) {
+    throw new Error("Missing Resend API key in environment variables");
+  }
+
+  resendClient = new Resend(resendApiKey);
+  return resendClient;
+}
+
+export async function sendBookingEmail(
+  bookingData: BookingData,
+  context: AppLoadContext
+) {
+  const resend = getResendClient(context);
+
   const { data, error } = await resend.emails.send({
     from: "Clavet Motor Inn Bookings <book@clavethotel.com>",
     to: ["management@clavethotel.com"],
