@@ -22,23 +22,58 @@ export const formatPhoneNumber = (value: string) => {
   // Take only first 10 digits
   const truncated = numbers.slice(0, 10);
 
-  // Format number as you type
+  // Add spaces after 3rd and 6th digits
   if (truncated.length > 6) {
-    return `(${truncated.slice(0, 3)}) ${truncated.slice(
-      3,
+    return `${truncated.slice(0, 3)} ${truncated.slice(3, 6)} ${truncated.slice(
       6
-    )}-${truncated.slice(6)}`;
-  } else if (truncated.length === 6) {
-    return `(${truncated.slice(0, 3)}) ${truncated.slice(3, 6)}-`; // Add hyphen at exactly 6 digits
+    )}`;
   } else if (truncated.length > 3) {
-    return `(${truncated.slice(0, 3)}) ${truncated.slice(3)}`;
-  } else if (truncated.length === 3) {
-    return `(${truncated}) `;
-  } else if (truncated.length > 0) {
-    return `(${truncated}`;
+    return `${truncated.slice(0, 3)} ${truncated.slice(3)}`;
   }
 
-  return "";
+  return truncated;
+};
+
+const validateName = (name: string, fieldName = "Name") => {
+  // Trim the input to handle whitespace
+  const trimmedName = name?.trim();
+
+  // Basic presence check
+  if (!trimmedName) {
+    return `${fieldName} is required`;
+  }
+
+  // Length check (adjust min/max as needed)
+  if (trimmedName.length < 2) {
+    return `${fieldName} must be at least 2 characters long`;
+  }
+
+  if (trimmedName.length > 50) {
+    return `${fieldName} cannot be longer than 50 characters`;
+  }
+
+  // Check for invalid characters (anything not a letter, space, or hyphen)
+  if (/[^a-zA-Z\s-]/.test(trimmedName)) {
+    return `${fieldName} can only contain letters, spaces, and hyphens`;
+  }
+
+  // Check that it contains at least one letter
+  if (!/[a-zA-Z]/.test(trimmedName)) {
+    return `${fieldName} must contain at least one letter`;
+  }
+
+  // Check for invalid patterns
+  if (/^[-\s]|[-\s]$/.test(trimmedName)) {
+    return `${fieldName} cannot start or end with a hyphen or space`;
+  }
+
+  // Check for consecutive hyphens or spaces
+  if (/[-]{2,}/.test(trimmedName) || /\s{2,}/.test(trimmedName)) {
+    return `${fieldName} cannot contain consecutive hyphens or spaces`;
+  }
+
+  // All validations passed
+  return null;
 };
 
 export const validateForm = (formData: FormData): ValidationErrors => {
@@ -48,14 +83,14 @@ export const validateForm = (formData: FormData): ValidationErrors => {
   const firstName = formData.get("firstName") as string;
   const lastName = formData.get("lastName") as string;
 
-  if (!firstName || firstName.length < 2 || /[^a-zA-Z\s-]/.test(firstName)) {
-    errors.firstName =
-      "Please enter a valid first name (letters, spaces, and hyphens only)";
+  const firstNameError = validateName(firstName, "First name");
+  if (firstNameError) {
+    errors.firstName = firstNameError;
   }
 
-  if (!lastName || lastName.length < 2 || /[^a-zA-Z\s-]/.test(lastName)) {
-    errors.lastName =
-      "Please enter a valid last name (letters, spaces, and hyphens only)";
+  const lastNameError = validateName(lastName, "Last name");
+  if (lastNameError) {
+    errors.lastName = lastNameError;
   }
 
   // Email validation

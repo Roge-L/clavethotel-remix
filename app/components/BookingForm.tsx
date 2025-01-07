@@ -11,6 +11,7 @@ export default function BookingForm() {
   const [selectedRoom, setSelectedRoom] = useState("standard-queen");
   const [showPolicies, setShowPolicies] = useState(false);
   const [errors, setErrors] = useState<ValidationErrors>({});
+  const today = new Date().toISOString().split("T")[0];
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,6 +98,7 @@ export default function BookingForm() {
                     type="date"
                     id="checkIn"
                     name="checkIn"
+                    min={today}
                     required
                     className={`w-full rounded-md shadow-sm p-2 border ${
                       errors.checkIn ? "border-red-500" : "border-gray-300"
@@ -119,6 +121,7 @@ export default function BookingForm() {
                     type="date"
                     id="checkOut"
                     name="checkOut"
+                    min={today}
                     required
                     className={`w-full rounded-md shadow-sm p-2 border ${
                       errors.checkOut ? "border-red-500" : "border-gray-300"
@@ -203,7 +206,6 @@ export default function BookingForm() {
                   type="tel"
                   id="phone"
                   name="phone"
-                  placeholder="(123) 456-7890"
                   onInput={(e) => {
                     e.currentTarget.value = formatPhoneNumber(
                       e.currentTarget.value
