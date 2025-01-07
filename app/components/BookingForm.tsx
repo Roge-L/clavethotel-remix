@@ -1,16 +1,34 @@
-import React, { useState } from "react";
+import { useState, FormEvent } from "react";
 import { Form } from "@remix-run/react";
+import {
+  formatPhoneNumber,
+  rooms,
+  validateForm,
+  ValidationErrors,
+} from "~/utils/booking";
 
 export default function BookingForm() {
   const [selectedRoom, setSelectedRoom] = useState("standard-queen");
   const [showPolicies, setShowPolicies] = useState(false);
+  const [errors, setErrors] = useState<ValidationErrors>({});
 
-  const rooms = [
-    { id: "standard-queen", name: "Standard Queen Room", price: "80" },
-    { id: "king-room", name: "King Room", price: "90" },
-    { id: "double-queen", name: "Double Queen Room", price: "99" },
-    { id: "family-room", name: "Family Room", price: "90" },
-  ];
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const validationErrors = validateForm(formData);
+
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    // If validation passes, clear errors and submit the form
+    setErrors({});
+    e.currentTarget.submit();
+  };
+
+  const ErrorMessage = ({ message }: { message?: string }) =>
+    message ? <p className="text-red-600 text-sm mt-1">{message}</p> : null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">
@@ -42,7 +60,7 @@ export default function BookingForm() {
             </ul>
           </div>
 
-          <Form method="post" className="space-y-6">
+          <Form method="post" onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
               <div>
                 <label
@@ -64,11 +82,9 @@ export default function BookingForm() {
                     </option>
                   ))}
                 </select>
-                <p className="text-xs text-gray-500 mt-1">
-                  Rate shown is base rate before 11% tax (5% GST + 6% PST)
-                </p>
               </div>
 
+              {/* Date inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
@@ -82,8 +98,11 @@ export default function BookingForm() {
                     id="checkIn"
                     name="checkIn"
                     required
-                    className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                    className={`w-full rounded-md shadow-sm p-2 border ${
+                      errors.checkIn ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  <ErrorMessage message={errors.checkIn} />
                   <p className="text-xs text-gray-500 mt-1">
                     Check-in after 3:00 PM
                   </p>
@@ -101,14 +120,18 @@ export default function BookingForm() {
                     id="checkOut"
                     name="checkOut"
                     required
-                    className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                    className={`w-full rounded-md shadow-sm p-2 border ${
+                      errors.checkOut ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  <ErrorMessage message={errors.checkOut} />
                   <p className="text-xs text-gray-500 mt-1">
                     Check-out before 11:00 AM
                   </p>
                 </div>
               </div>
 
+              {/* Name inputs */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label
@@ -122,8 +145,11 @@ export default function BookingForm() {
                     id="firstName"
                     name="firstName"
                     required
-                    className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                    className={`w-full rounded-md shadow-sm p-2 border ${
+                      errors.firstName ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  <ErrorMessage message={errors.firstName} />
                 </div>
 
                 <div>
@@ -138,11 +164,15 @@ export default function BookingForm() {
                     id="lastName"
                     name="lastName"
                     required
-                    className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                    className={`w-full rounded-md shadow-sm p-2 border ${
+                      errors.lastName ? "border-red-500" : "border-gray-300"
+                    }`}
                   />
+                  <ErrorMessage message={errors.lastName} />
                 </div>
               </div>
 
+              {/* Contact inputs */}
               <div>
                 <label
                   htmlFor="email"
@@ -155,8 +185,11 @@ export default function BookingForm() {
                   id="email"
                   name="email"
                   required
-                  className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                  className={`w-full rounded-md shadow-sm p-2 border ${
+                    errors.email ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
+                <ErrorMessage message={errors.email} />
               </div>
 
               <div>
@@ -170,11 +203,22 @@ export default function BookingForm() {
                   type="tel"
                   id="phone"
                   name="phone"
+                  placeholder="(123) 456-7890"
+                  onInput={(e) => {
+                    e.currentTarget.value = formatPhoneNumber(
+                      e.currentTarget.value
+                    );
+                  }}
+                  maxLength={14}
                   required
-                  className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                  className={`w-full rounded-md shadow-sm p-2 border ${
+                    errors.phone ? "border-red-500" : "border-gray-300"
+                  }`}
                 />
+                <ErrorMessage message={errors.phone} />
               </div>
 
+              {/* Special requests */}
               <div>
                 <label
                   htmlFor="specialRequests"
@@ -186,9 +230,17 @@ export default function BookingForm() {
                   id="specialRequests"
                   name="specialRequests"
                   rows={3}
-                  className="w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                  className={`w-full rounded-md shadow-sm p-2 border ${
+                    errors.specialRequests
+                      ? "border-red-500"
+                      : "border-gray-300"
+                  }`}
                   placeholder="Please note that special requests cannot be guaranteed but we will do our best to accommodate them."
                 />
+                <ErrorMessage message={errors.specialRequests} />
+                <p className="text-xs text-gray-500 mt-1">
+                  Maximum 500 characters. No links allowed.
+                </p>
               </div>
 
               {/* Policies Toggle */}
