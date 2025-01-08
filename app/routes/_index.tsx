@@ -91,7 +91,7 @@ export default function Index() {
                 </p>
                 <p className="text-sm text-gray-600">High-Speed Internet</p>
               </div>
-              <div className="border-l-2 border-gray-200 pl-4">
+              <div className="order-l-2 border-gray-200 pl-4">
                 <p className="font-semibold mb-1 flex items-center gap-2">
                   <span role="img" aria-label="car" className="text-lg">
                     🚗
