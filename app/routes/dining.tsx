@@ -1,7 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 
-interface DiningProps {}
-type Timer = ReturnType<typeof setInterval> | null;
 
 export default function Dining() {
  const images = [
@@ -14,7 +12,6 @@ export default function Dining() {
 
  const [currentImage, setCurrentImage] = useState<number>(0);
  const [isPlaying, setIsPlaying] = useState<boolean>(true);
- const [isPdfOpen, setIsPdfOpen] = useState<boolean>(false);
  const [loadedImages, setLoadedImages] = useState<Set<string>>(new Set());
  const UBER_EATS_URL = 'https://www.ubereats.com/ca/store/clavet-cafe/ix58d4UHWsOkSSFudODHjg?diningMode=DELIVERY&mod=storeDeliveryTime&modctx=%257B%2522entryPoint%2522%253A%2522store-auto-surface%2522%252C%2522encodedStoreUuid%2522%253A%2522ix58d4UHWsOkSSFudODHjg%2522%257D&pl=JTdCJTIyYWRkcmVzcyUyMiUzQSUyMjEwJTIwTWFpbiUyMFN0JTIyJTJDJTIycmVmZXJlbmNlJTIyJTNBJTIyOTE1YWU2NjAtMmQ0NC03YWJhLTdiZTgtODUwMjQ0YTAxMmQ1JTIyJTJDJTIycmVmZXJlbmNlVHlwZSUyMiUzQSUyMnViZXJfcGxhY2VzJTIyJTJDJTIybGF0aXR1ZGUlMjIlM0E1MS45OTY5MDc2JTJDJTIybG9uZ2l0dWRlJTIyJTNBLTEwNi4zNzM2ODc1JTdE&ps=1&sc=SEARCH_SUGGESTIO';
 
