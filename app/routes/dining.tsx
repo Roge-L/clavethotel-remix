@@ -3,11 +3,9 @@ import { useState, useEffect } from 'react';
 
 export default function Dining() {
  const images = [
-   'cafe&bar-1.jpg',
-   'cafe&bar-2.jpg',
-   'cafe&bar-3.jpg',
-   'cafe&bar-4.jpg',
-   'cafe&bar-5.jpg'
+   'cafe-1.png',
+   'cafe-2.png',
+   'cafe-3.png',
  ];
 
  const [currentImage, setCurrentImage] = useState<number>(0);
@@ -62,7 +60,7 @@ export default function Dining() {
        </div>
        <div className="absolute inset-0 bg-black/55"></div>
        <div className="absolute inset-0 flex flex-col items-center justify-center animate-fadeInOneSecond font-serif px-4">
-         <h1 className="text-3xl md:text-6xl mb-4 truncate max-w-full">Our Cafe & Bar</h1>
+         <h1 className="text-4xl md:text-7xl mb-4 truncate max-w-full">Clavet Cafe</h1>
          <p className="text-2xl md:text-4xl">Chinese & Western Delights</p>
        </div>
 
@@ -93,7 +91,7 @@ export default function Dining() {
        <div className="flex flex-col md:flex-row justify-center items-center gap-8 md:gap-16 w-full py-8 md:py-0">  
          <div className="space-y-6 w-full md:w-[500px]">
            <h2 className="text-3xl md:text-6xl whitespace-nowrap">Dining at Clavet Cafe</h2>
-           <div className="text-xl md:text-2xl leading-relaxed text-slate-600">
+           <div className="text-xl md:text-2xl leading-relaxed text-slate-700">
              At Clavet Cafe, we serve fresh, hearty meals that bring comfort food 
              classics and bold Asian-inspired flavors to life. From golden, crispy
              dried ribs and rich bacon cheese burgers to sizzling hot chow mein.
@@ -146,7 +144,7 @@ export default function Dining() {
              
              <div className="flex-1 space-y-6">
                <h2 className="text-3xl md:text-6xl font-serif text-slate-900">Hungry Now?</h2>
-               <p className="text-xl md:text-2xl leading-relaxed text-slate-600">
+               <p className="text-xl md:text-2xl leading-relaxed text-slate-700">
                  Get our delicious fusion cuisine delivered straight to your door. 
                  Enjoy Clavet's finest dishes in the comfort of your home. Whether 
                  you're craving a quick lunch or hosting a family dinner, our full
