@@ -1,11 +1,15 @@
 import { useState, FormEvent } from "react";
-import { Form } from "@remix-run/react";
+import { Form } from "react-router";
 import {
   formatPhoneNumber,
   rooms,
   validateForm,
   ValidationErrors,
 } from "~/utils/booking";
+
+function ErrorMessage({ message }: { message?: string }) {
+  return message ? <p className="text-red-600 text-sm mt-1">{message}</p> : null;
+}
 
 export default function BookingForm() {
   const [selectedRoom, setSelectedRoom] = useState("standard-queen");
@@ -27,9 +31,6 @@ export default function BookingForm() {
     setErrors({});
     e.currentTarget.submit();
   };
-
-  const ErrorMessage = ({ message }: { message?: string }) =>
-    message ? <p className="text-red-600 text-sm mt-1">{message}</p> : null;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12 px-4">

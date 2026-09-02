@@ -1,0 +1,13 @@
+{
+  "name": "Clavet Motor Inn",
+  "short_name": "Clavet Inn",
+  "description": "Motel, cafe and bar in Clavet, Saskatchewan — 15 minutes from Saskatoon.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#0f172a",
+  "lang": "en-CA",
+  "icons": [
+    { "src": "/favicon.ico", "sizes": "any", "type": "image/x-icon" }
+  ]
+}

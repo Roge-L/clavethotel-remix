@@ -1,6 +1,5 @@
-import { json } from "@remix-run/cloudflare";
 import { Resend } from "resend";
-import type { AppLoadContext } from "@remix-run/cloudflare";
+import type { AppLoadContext } from "react-router";
 
 type BookingData = {
   firstName: string;
@@ -13,19 +12,28 @@ type BookingData = {
   specialRequests?: string;
 };
 
-let resendClient: Resend | null = null;
-
 function getResendClient(context: AppLoadContext) {
-  if (resendClient) return resendClient;
-
   const resendApiKey = context.cloudflare.env.RESEND_API_KEY;
 
   if (!resendApiKey) {
     throw new Error("Missing Resend API key in environment variables");
   }
 
-  resendClient = new Resend(resendApiKey);
-  return resendClient;
+  return new Resend(resendApiKey);
+}
+
+/** Guest-supplied values land in an HTML email, so escape before interpolating. */
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function row(label: string, value: string) {
+  return `<p><strong>${label}:</strong> ${escapeHtml(value)}</p>`;
 }
 
 export async function sendBookingEmail(
@@ -33,32 +41,34 @@ export async function sendBookingEmail(
   context: AppLoadContext
 ) {
   const resend = getResendClient(context);
+  const guest = `${bookingData.firstName} ${bookingData.lastName}`;
 
   const { data, error } = await resend.emails.send({
     from: "Clavet Motor Inn Bookings <book@clavethotel.com>",
     to: ["management@clavethotel.com"],
-    subject: `New Booking Request - ${bookingData.firstName} ${bookingData.lastName}`,
-    html: `
-        <h2>New Booking Request</h2>
-        <p><strong>Guest:</strong> ${bookingData.firstName} ${
-      bookingData.lastName
-    }</p>
-        <p><strong>Email:</strong> ${bookingData.email}</p>
-        <p><strong>Phone:</strong> ${bookingData.phone}</p>
-        <p><strong>Room Type:</strong> ${bookingData.room}</p>
-        <p><strong>Check-in:</strong> ${bookingData.checkIn}</p>
-        <p><strong>Check-out:</strong> ${bookingData.checkOut}</p>
-        ${
-          bookingData.specialRequests
-            ? `<p><strong>Special Requests:</strong> ${bookingData.specialRequests}</p>`
-            : ""
-        }
-      `,
+    replyTo: bookingData.email,
+    subject: `New Booking Request - ${guest}`,
+    html: [
+      "<h2>New Booking Request</h2>",
+      row("Guest", guest),
+      row("Email", bookingData.email),
+      row("Phone", bookingData.phone),
+      row("Room Type", bookingData.room),
+      row("Check-in", bookingData.checkIn),
+      row("Check-out", bookingData.checkOut),
+      bookingData.specialRequests
+        ? row("Special Requests", bookingData.specialRequests)
+        : "",
+    ].join("\n"),
   });
 
   if (error) {
-    return json({ error: "Failed to send booking email." }, { status: 400 });
+    console.error("Resend error:", error);
+    return Response.json(
+      { error: "Failed to send booking email." },
+      { status: 502 }
+    );
   }
 
-  return json(data, 200);
+  return Response.json(data);
 }

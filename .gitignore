@@ -4,8 +4,6 @@ node_modules
 /build
 .env
 .dev.vars
-
 .wrangler
-
-.env
+.react-router
 .DS_Store

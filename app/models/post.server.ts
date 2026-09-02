@@ -1,7 +1,7 @@
 import { getSupabaseClient } from "~/supabase";
-import type { AppLoadContext } from "@remix-run/cloudflare";
+import type { AppLoadContext } from "react-router";
 
-type Post = {
+export type Post = {
   id: number;
   title: string;
   slug: string;
@@ -16,14 +16,17 @@ type Post = {
 
 export async function getPosts(context: AppLoadContext): Promise<Post[]> {
   const supabase = getSupabaseClient(context);
-  const { data, error } = await supabase.from("posts").select("*");
+  const { data, error } = await supabase
+    .from("posts")
+    .select("*")
+    .order("published_date", { ascending: false });
 
   if (error) {
     console.error("Error fetching posts:", error);
     return [];
   }
 
-  return (data as Post[]) || [];
+  return (data as Post[]) ?? [];
 }
 
 export async function getPost(
@@ -35,12 +38,12 @@ export async function getPost(
     .from("posts")
     .select("*")
     .eq("slug", slug)
-    .single();
+    .maybeSingle();
 
   if (error) {
     console.error("Error fetching post:", error);
     return null;
   }
 
-  return data as Post;
+  return (data as Post | null) ?? null;
 }

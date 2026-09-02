@@ -1,76 +1,71 @@
-import { useState } from "react";
-import { Link, useLocation } from "@remix-run/react";
+import { useEffect, useState } from "react";
+import { Link, NavLink, useLocation } from "react-router";
+import { BUSINESS } from "~/data/site";
+
+const NAV_LINKS = [
+  { path: "/", label: "Home" },
+  { path: "/rooms", label: "Rooms" },
+  { path: "/dining", label: "Dining" },
+  { path: "/events", label: "Events" },
+  { path: "/about", label: "About" },
+  { path: "/contact", label: "Contact" },
+];
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-
-  const isCurrentPage = (path: string) => {
-    return location.pathname === path;
-  };
-
   const isHomePage = location.pathname === "/";
 
-  const navLinks = [
-    { path: "/", label: "Home" },
-    { path: "/rooms", label: "Rooms" },
-    { path: "/dining", label: "Dining" },
-    { path: "/about", label: "About" },
-    { path: "/contact", label: "Contact" },
-  ];
+  // A full-screen drawer over a scrollable page traps the scroll behind it.
+  useEffect(() => {
+    document.body.style.overflow = isOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
-    <nav className="absolute w-full z-50">
-      {/* Full Screen Mobile Navigation */}
+    <nav aria-label="Main" className="absolute z-50 w-full">
       <div
-        className={`md:hidden fixed inset-0 bg-slate-900 transition-all duration-500 ease-in-out ${
+        id="mobile-menu"
+        className={`fixed inset-0 bg-slate-900 transition-all duration-500 ease-in-out md:hidden ${
           isOpen
-            ? "opacity-100 translate-x-0"
-            : "opacity-0 translate-x-full pointer-events-none"
+            ? "translate-x-0 opacity-100"
+            : "pointer-events-none translate-x-full opacity-0"
         }`}
       >
-        <div className="flex flex-col items-center justify-center h-full">
-          {/* Mobile Logo */}
+        <div className="flex h-full flex-col items-center justify-center">
           <Link
             to="/"
             onClick={() => setIsOpen(false)}
-            className={`font-serif text-3xl tracking-wide mb-12 text-white transition-all duration-500 delay-100 ${
-              isOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"
-            }`}
+            className="mb-12 font-serif text-3xl tracking-wide text-white"
           >
-            Clavet Motor Inn
+            {BUSINESS.name}
           </Link>
 
           <div className="flex flex-col items-center gap-8">
-            {navLinks.map((link, index) => (
-              <Link
+            {NAV_LINKS.map((link) => (
+              <NavLink
                 key={link.path}
                 to={link.path}
+                end={link.path === "/"}
                 onClick={() => setIsOpen(false)}
-                className={`relative text-xl text-white tracking-wider transition-all duration-500 delay-${
-                  (index + 2) * 100
-                } group ${
-                  isOpen
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-4"
-                } ${isCurrentPage(link.path) ? "font-medium" : ""}`}
+                className={({ isActive }) =>
+                  `group relative text-xl tracking-wider text-white ${
+                    isActive ? "font-medium" : ""
+                  }`
+                }
               >
                 <span className="relative">
                   {link.label.toUpperCase()}
-                  <span className="absolute -bottom-2 left-0 w-0 h-0.5 bg-white transition-all duration-300 group-hover:w-full" />
+                  <span className="absolute -bottom-2 left-0 h-0.5 w-0 bg-white transition-all duration-300 group-hover:w-full" />
                 </span>
-              </Link>
+              </NavLink>
             ))}
             <Link
               to="/book"
               onClick={() => setIsOpen(false)}
-              className={`mt-4 px-8 py-3 text-xl tracking-wider text-white bg-slate-800 rounded-lg 
-                transition-all duration-500 delay-700 hover:bg-slate-700 active:bg-slate-600
-                hover:scale-105 active:scale-95 ${
-                  isOpen
-                    ? "opacity-100 translate-y-0"
-                    : "opacity-0 -translate-y-4"
-                }`}
+              className="mt-4 rounded-lg bg-slate-800 px-8 py-3 text-xl tracking-wider text-white transition-all duration-500 hover:scale-105 hover:bg-slate-700 active:scale-95 active:bg-slate-600"
             >
               BOOK NOW
             </Link>
@@ -78,29 +73,21 @@ export default function Navigation() {
         </div>
       </div>
 
-      {/* Header */}
-      <div
-        className={`transition-colors duration-300 ${
-          isHomePage ? "" : "bg-white shadow-md"
-        }`}
-      >
-        <div className="px-4 mx-auto max-w-7xl">
-          {/* Desktop Navigation */}
-          <div className="flex items-center justify-between h-20">
-            {/* Logo/Home link - Visible on all pages */}
+      <div className={isHomePage ? "" : "bg-white shadow-md"}>
+        <div className="mx-auto max-w-7xl px-4">
+          <div className="flex h-20 items-center justify-between">
             <Link
               to="/"
               className={`font-serif text-2xl tracking-wide transition-opacity hover:opacity-75 ${
-                isHomePage ? "text-white md:block hidden" : "text-slate-900"
+                isHomePage ? "hidden text-white md:block" : "text-slate-900"
               }`}
             >
-              Clavet Motor Inn
+              {BUSINESS.name}
             </Link>
 
-            {/* Mobile Menu Button - Right-aligned */}
-            <div className="md:hidden ml-auto relative z-[60]">
+            <div className="relative z-[60] ml-auto md:hidden">
               <button
-                onClick={() => setIsOpen(!isOpen)}
+                onClick={() => setIsOpen((open) => !open)}
                 className={`p-2 transition-colors ${
                   isOpen
                     ? "text-white"
@@ -108,21 +95,23 @@ export default function Navigation() {
                       ? "text-gray-100"
                       : "text-slate-900"
                 }`}
-                aria-label="Toggle menu"
+                aria-label={isOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isOpen}
+                aria-controls="mobile-menu"
               >
-                <div className="relative w-6 h-6">
+                <div className="relative h-6 w-6">
                   <span
-                    className={`absolute top-1/2 left-0 block w-6 h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
+                    className={`absolute left-0 top-1/2 block h-0.5 w-6 transform bg-current transition-all duration-300 ease-in-out ${
                       isOpen ? "rotate-45" : "-translate-y-2"
                     }`}
                   />
                   <span
-                    className={`absolute top-1/2 left-0 block w-6 h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
+                    className={`absolute left-0 top-1/2 block h-0.5 w-6 transform bg-current transition-all duration-300 ease-in-out ${
                       isOpen ? "opacity-0" : ""
                     }`}
                   />
                   <span
-                    className={`absolute top-1/2 left-0 block w-6 h-0.5 bg-current transform transition-all duration-300 ease-in-out ${
+                    className={`absolute left-0 top-1/2 block h-0.5 w-6 transform bg-current transition-all duration-300 ease-in-out ${
                       isOpen ? "-rotate-45" : "translate-y-2"
                     }`}
                   />
@@ -130,28 +119,26 @@ export default function Navigation() {
               </button>
             </div>
 
-            {/* Desktop Menu */}
-            <div className="hidden md:flex items-center gap-8">
-              {navLinks.map((link) => (
-                <Link
+            <div className="hidden items-center gap-8 md:flex">
+              {NAV_LINKS.map((link) => (
+                <NavLink
                   key={link.path}
                   to={link.path}
-                  className={`text-sm tracking-wider transition-colors hover:text-gray-500 ${
-                    isHomePage
-                      ? "text-white hover:text-gray-300"
-                      : "text-slate-900"
-                  } ${isCurrentPage(link.path) ? "font-medium" : ""}`}
+                  end={link.path === "/"}
+                  className={({ isActive }) =>
+                    `text-sm tracking-wider transition-colors ${
+                      isHomePage
+                        ? "text-white hover:text-gray-300"
+                        : "text-slate-900 hover:text-gray-500"
+                    } ${isActive ? "font-medium" : ""}`
+                  }
                 >
                   {link.label.toUpperCase()}
-                </Link>
+                </NavLink>
               ))}
               <Link
                 to="/book"
-                className={`px-6 py-2 text-sm tracking-wider rounded transition-colors ${
-                  isHomePage
-                    ? "text-white bg-slate-900 hover:bg-slate-800"
-                    : "text-white bg-slate-900 hover:bg-slate-800"
-                }`}
+                className="rounded bg-slate-900 px-6 py-2 text-sm tracking-wider text-white transition-colors hover:bg-slate-800"
               >
                 BOOK NOW
               </Link>
