@@ -5,6 +5,15 @@ import { renderToReadableStream } from "react-dom/server";
 
 const ABORT_DELAY = 5000;
 
+const SECURITY_HEADERS: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+  "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+  "Cross-Origin-Opener-Policy": "same-origin",
+};
+
 export default async function handleRequest(
   request: Request,
   responseStatusCode: number,
@@ -38,6 +47,13 @@ export default async function handleRequest(
   }
 
   responseHeaders.set("Content-Type", "text/html");
+
+  // public/_headers only covers static assets; HTML comes from this Pages
+  // Function, so the document's security headers have to be set here.
+  for (const [header, value] of Object.entries(SECURITY_HEADERS)) {
+    responseHeaders.set(header, value);
+  }
+
   return new Response(body, {
     headers: responseHeaders,
     status: responseStatusCode,
