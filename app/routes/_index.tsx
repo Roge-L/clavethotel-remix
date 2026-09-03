@@ -128,7 +128,7 @@ export default function Index() {
             {ROOMS.map((room) => (
               <Link
                 key={room.slug}
-                to="/rooms"
+                to="/book"
                 className="block overflow-hidden rounded-lg bg-white shadow-lg transition duration-500 hover:scale-105"
               >
                 <div className="aspect-video w-full">

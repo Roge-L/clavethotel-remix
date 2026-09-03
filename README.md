@@ -13,10 +13,9 @@ npm install
 npm run dev
 ```
 
-Server-side integrations (Supabase for blog posts, Resend for booking emails)
-read their credentials from Cloudflare bindings. For local development, copy
-`.dev.vars.example` to `.dev.vars` and fill it in. Without it, every route works
-except `/posts`, which needs Supabase.
+Booking notification emails go through Resend, which reads its key from a
+Cloudflare binding. For local development, copy `.dev.vars.example` to
+`.dev.vars` and fill it in.
 
 ```sh
 npm run typecheck   # react-router typegen && tsc
@@ -31,6 +30,11 @@ npm run preview     # build, then serve with wrangler
 npm run deploy      # build + wrangler pages deploy
 ```
 
+## Pages
+
+`/` · `/dining` · `/events` · `/book` (plus `/book/success`). Room rates render
+on both the home page and `/book` from the same data.
+
 ## SEO
 
 Business facts live in one place, [`app/data/site.ts`](app/data/site.ts) — name,
@@ -42,8 +46,8 @@ as spam).
 - `app/lib/seo.ts` — `buildMeta()` builds title, description, canonical, Open
   Graph and Twitter tags for every route.
 - `app/lib/structured-data.ts` — the Schema.org graph: `Hotel`/`LodgingBusiness`
-  with per-room `HotelRoom` offers, plus `Restaurant`, `BarOrPub`, `WebSite`,
-  `BreadcrumbList` and `FAQPage`.
+  with per-room `HotelRoom` offers, plus `Restaurant`, `BarOrPub`, `WebSite`
+  and `BreadcrumbList`.
 - `app/routes/robots[.]txt.ts` and `app/routes/sitemap[.]xml.ts` are generated
   at request time from the same constants.
 

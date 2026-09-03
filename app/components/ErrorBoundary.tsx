@@ -33,8 +33,8 @@ export default function ErrorBoundary() {
           <nav aria-label="Helpful links">
             <ul className="flex flex-wrap justify-center gap-4 pt-2 text-slate-900">
               <li>
-                <Link to="/rooms" className="underline hover:no-underline">
-                  Rooms
+                <Link to="/book" className="underline hover:no-underline">
+                  Rooms &amp; Rates
                 </Link>
               </li>
               <li>
@@ -43,8 +43,8 @@ export default function ErrorBoundary() {
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="underline hover:no-underline">
-                  Contact
+                <Link to="/events" className="underline hover:no-underline">
+                  Events
                 </Link>
               </li>
             </ul>

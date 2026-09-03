@@ -49,6 +49,7 @@ export default function Book() {
               {ROOMS.map((room) => (
                 <div
                   key={room.slug}
+                  id={room.slug}
                   className="rounded-lg border border-slate-200 bg-slate-50 p-4"
                 >
                   <h3 className="font-medium text-slate-800">{room.name}</h3>

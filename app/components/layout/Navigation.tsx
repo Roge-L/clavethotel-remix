@@ -4,11 +4,8 @@ import { BUSINESS } from "~/data/site";
 
 const NAV_LINKS = [
   { path: "/", label: "Home" },
-  { path: "/rooms", label: "Rooms" },
   { path: "/dining", label: "Dining" },
   { path: "/events", label: "Events" },
-  { path: "/about", label: "About" },
-  { path: "/contact", label: "Contact" },
 ];
 
 export default function Navigation() {

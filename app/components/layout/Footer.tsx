@@ -2,11 +2,9 @@ import { Link } from "react-router";
 import { BUSINESS, CAFE_HOURS, INN_HOURS } from "~/data/site";
 
 const QUICK_LINKS = [
-  { to: "/rooms", label: "Rooms & Rates" },
+  { to: "/book", label: "Rooms & Rates" },
   { to: "/dining", label: "Café & Bar" },
   { to: "/events", label: "Events" },
-  { to: "/about", label: "About Us" },
-  { to: "/contact", label: "Contact" },
 ];
 
 function range(days: readonly string[]) {

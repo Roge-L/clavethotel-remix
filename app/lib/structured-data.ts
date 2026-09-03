@@ -66,7 +66,7 @@ function amenityFeatures() {
 function hotelRooms() {
   return ROOMS.map((room) => ({
     "@type": "HotelRoom",
-    "@id": `${SITE_URL}/rooms#${room.slug}`,
+    "@id": `${SITE_URL}/book#${room.slug}`,
     name: room.name,
     description: room.description,
     image: `${SITE_URL}${room.image}`,
@@ -226,14 +226,3 @@ export function withContext(node: object) {
   return { "@context": "https://schema.org", ...node };
 }
 
-export function faqPage(faqs: { question: string; answer: string }[]) {
-  return {
-    "@context": "https://schema.org",
-    "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
-      "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
-    })),
-  };
-}
